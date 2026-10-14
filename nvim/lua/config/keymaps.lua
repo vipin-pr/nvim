@@ -7,12 +7,6 @@ vim.keymap.set("i", "jj", "<Esc>", {
   desc = "Exit Insert mode",
 })
 
--- Emacs-style transpose words
-vim.keymap.set("n", "<M-t>", "m`[egE``", {
-  desc = "Transpose words",
-})
-
-
 -- Emacs-style transpose words: Alt+t
 local function transpose_words()
   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
