@@ -76,3 +76,8 @@ vim.keymap.set("n", "<C-t>", function()
     vim.cmd("!" .. cmd)
   end
 end, { desc = "Run shell command" })
+
+vim.keymap.set("n", "<leader>E", function()
+  vim.cmd("Neotree position=current toggle")
+end, { desc = "Toggle full-window file explorer" })
+
