@@ -75,3 +75,14 @@ vim.keymap.set("n", "<leader>E", function()
   vim.cmd("Neotree position=current toggle")
 end, { desc = "Toggle full-window file explorer" })
 
+vim.keymap.set("n", "<leader>ld", function()
+  require("trouble").toggle({
+    mode = "diagnostics",
+    win = {
+      type = "split",
+      position = "bottom",
+      size = 10,
+    },
+  })
+end, { desc = "Diagnostics (Trouble)" })
+
