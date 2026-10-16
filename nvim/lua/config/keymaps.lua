@@ -64,13 +64,6 @@ vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<cr>", {
 
 vim.keymap.set("i", "<C-BS>", "<C-w>", { desc = "Delete word backward" })
 
-vim.keymap.set("n", "<C-t>", function()
-  local cmd = vim.fn.input("$ ")
-  if cmd ~= "" then
-    vim.cmd("!" .. cmd)
-  end
-end, { desc = "Run shell command" })
-
 vim.keymap.set("n", "<leader>E", function()
   vim.cmd("Neotree position=current toggle")
 end, { desc = "Toggle full-window file explorer" })
@@ -86,3 +79,28 @@ vim.keymap.set("n", "<leader>ld", function()
   })
 end, { desc = "Diagnostics (Trouble)" })
 
+vim.keymap.set("n", "<C-t>", function()
+  local cmd = vim.fn.input("$ ")
+  if cmd == "" then
+    return
+  end
+
+  local output = vim.fn.systemlist(cmd)
+  local buf = vim.api.nvim_create_buf(false, true)
+
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, output)
+  vim.api.nvim_buf_set_name(buf, "Command Output")
+
+  vim.cmd("botright 15split")
+  vim.api.nvim_win_set_buf(0, buf)
+
+  vim.bo[buf].modifiable = false
+  vim.bo[buf].bufhidden = "wipe"
+  vim.bo[buf].buftype = "nofile"
+
+  vim.keymap.set("n", "q", "<cmd>close<cr>", {
+    buffer = buf,
+    silent = true,
+    desc = "Close command output",
+  })
+end, { desc = "Run shell command in output split" })
