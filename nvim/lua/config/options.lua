@@ -35,3 +35,6 @@ vim.opt.sidescrolloff = 8
 
 -- Code readability
 vim.opt.showmatch = true
+
+-- Disable diagnostics by default
+vim.diagnostic.enable(false)
