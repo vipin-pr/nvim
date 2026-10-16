@@ -40,11 +40,11 @@ return {
 
         -- Environment variables
         vim.api.nvim_set_hl(0, "@variable.environment", {
-            fg = "#D1C7C5",
+            fg = "#96A6C8",
             bold = true,
         })
         vim.api.nvim_set_hl(0, "Constant", {
-            fg = "#D1C7C5",
+            fg = "#96A6C8",
             bold = true,
         })
 
