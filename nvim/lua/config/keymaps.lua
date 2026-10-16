@@ -80,27 +80,39 @@ vim.keymap.set("n", "<leader>ld", function()
 end, { desc = "Diagnostics (Trouble)" })
 
 vim.keymap.set("n", "<C-t>", function()
-  local cmd = vim.fn.input("$ ")
-  if cmd == "" then
-    return
-  end
+    local cmd = vim.fn.input("$ ")
+    if cmd == "" then
+        return
+    end
 
-  local output = vim.fn.systemlist(cmd)
-  local buf = vim.api.nvim_create_buf(false, true)
+    -- Open output in a 15-line split
+    vim.cmd("botright 15new")
+    local buf = vim.api.nvim_get_current_buf()
+    local win = vim.api.nvim_get_current_win()
 
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, output)
-  vim.api.nvim_buf_set_name(buf, "Command Output")
+    vim.api.nvim_buf_set_name(buf, "Command Output")
 
-  vim.cmd("botright 15split")
-  vim.api.nvim_win_set_buf(0, buf)
+    -- Run in a real terminal for ANSI colors
+    vim.fn.termopen(cmd)
 
-  vim.bo[buf].modifiable = false
-  vim.bo[buf].bufhidden = "wipe"
-  vim.bo[buf].buftype = "nofile"
+    -- Switch to Terminal-Normal mode
+    vim.cmd("stopinsert")
 
-  vim.keymap.set("n", "q", "<cmd>close<cr>", {
-    buffer = buf,
-    silent = true,
-    desc = "Close command output",
-  })
-end, { desc = "Run shell command in output split" })
+    -- Prevent entering terminal input mode
+    vim.keymap.set("n", "i", "<Nop>", {
+        buffer = buf,
+        silent = true,
+    })
+
+    -- Close output with q
+    vim.keymap.set("n", "q", function()
+        if vim.api.nvim_win_is_valid(win) then
+            vim.api.nvim_win_close(win, true)
+        end
+    end, {
+        buffer = buf,
+        silent = true,
+        desc = "Close command output",
+    })
+end, { desc = "Run command in terminal output split" })
+
