@@ -42,3 +42,6 @@ vim.opt.showmatch = true
 
 -- Disable diagnostics by default
 vim.diagnostic.enable(false)
+
+-- Disable auto-formatting globally
+vim.g.autoformat = false
