@@ -80,31 +80,36 @@ vim.keymap.set("n", "<leader>ld", function()
 end, { desc = "Diagnostics (Trouble)" })
 
 vim.keymap.set("n", "<C-t>", function()
-    local cmd = vim.fn.input("$ ")
+    local cmd = vim.fn.input("$ ", "", "shellcmd")
+
     if cmd == "" then
         return
     end
 
-    -- Open output in a 15-line split
+    -- Add command to Neovim input history
+    vim.fn.histadd("input", cmd)
+
+    -- Open output split
     vim.cmd("botright 15new")
+
     local buf = vim.api.nvim_get_current_buf()
     local win = vim.api.nvim_get_current_win()
 
     vim.api.nvim_buf_set_name(buf, "Command Output")
 
-    -- Run in a real terminal for ANSI colors
+    -- Execute command in terminal
     vim.fn.termopen(cmd)
 
     -- Switch to Terminal-Normal mode
     vim.cmd("stopinsert")
 
-    -- Prevent entering terminal input mode
+    -- Disable terminal input
     vim.keymap.set("n", "i", "<Nop>", {
         buffer = buf,
         silent = true,
     })
 
-    -- Close output with q
+    -- Close with q
     vim.keymap.set("n", "q", function()
         if vim.api.nvim_win_is_valid(win) then
             vim.api.nvim_win_close(win, true)
@@ -114,5 +119,6 @@ vim.keymap.set("n", "<C-t>", function()
         silent = true,
         desc = "Close command output",
     })
-end, { desc = "Run command in terminal output split" })
-
+end, {
+    desc = "Run command in terminal output split",
+})
