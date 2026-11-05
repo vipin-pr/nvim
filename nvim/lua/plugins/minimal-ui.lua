@@ -9,7 +9,7 @@ return {
     "folke/snacks.nvim",
     opts = {
       dashboard = {
-        enabled = false,
+        enabled = true,
       },
       explorer = {
         enabled = false,
