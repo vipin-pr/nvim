@@ -87,3 +87,27 @@ end, { desc = "Toggle Terminal" })
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", {
   desc = "Terminal Normal Mode",
 })
+
+-- Interactive Change/Undo History Picker
+vim.keymap.set('n', '<leader>h', function()
+    Snacks.picker.undo()
+end, { desc = "Change History" })
+
+-- Marks Menu
+vim.keymap.set("n", "<leader>m", "", { desc = "Marks" })
+
+vim.keymap.set("n", "<leader>mm", function()
+  Snacks.picker.marks()
+end, { desc = "Browse Marks" })
+
+vim.keymap.set("n", "<leader>md", function()
+  local mark = vim.fn.getcharstr()
+  if mark ~= "" then
+    vim.cmd("delmarks " .. mark)
+  end
+end, { desc = "Delete Mark" })
+
+vim.keymap.set("n", "<leader>mD", function()
+  vim.cmd("delmarks!")
+  vim.notify("All marks deleted", vim.log.levels.INFO)
+end, { desc = "Delete All Marks" })
