@@ -100,6 +100,16 @@ end, { desc = "Change History" })
 -- Marks Menu
 vim.keymap.set("n", "<leader>m", "", { desc = "Marks" })
 
+-- Jump to Mark - gm<mark>
+vim.keymap.set("n", "gm", function()
+  local mark = vim.fn.getcharstr()
+  if mark == "" then
+    return
+  end
+  vim.cmd("normal! `" .. mark)
+end, { desc = "Jump to Mark" })
+
+-- list marks
 vim.keymap.set("n", "<leader>mm", function()
   Snacks.picker.marks()
 end, { desc = "Browse Marks" })
