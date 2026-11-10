@@ -62,6 +62,7 @@ vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<cr>", {
   desc = "Toggle Neo-tree",
 })
 
+-- Ctrl+Backspace - Delete word backward
 vim.keymap.set("i", "<C-BS>", "<C-w>", { desc = "Delete word backward" })
 
 vim.keymap.set("n", "<leader>E", function()
@@ -89,8 +90,11 @@ vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", {
 })
 
 -- Interactive Change/Undo History Picker
-vim.keymap.set('n', '<leader>h', function()
-    Snacks.picker.undo()
+vim.keymap.set("n", "<leader>h", function()
+  Snacks.picker.undo({
+    focus = "list",
+    enter = true,
+  })
 end, { desc = "Change History" })
 
 -- Marks Menu
@@ -100,10 +104,29 @@ vim.keymap.set("n", "<leader>mm", function()
   Snacks.picker.marks()
 end, { desc = "Browse Marks" })
 
+-- Delete Mark - <leader>md<mark>
 vim.keymap.set("n", "<leader>md", function()
   local mark = vim.fn.getcharstr()
-  if mark ~= "" then
-    vim.cmd("delmarks " .. mark)
+
+  if mark == "" then
+    return
+  end
+
+  local success
+
+  if mark:match("^[a-z]$") then
+    success = vim.api.nvim_buf_del_mark(0, mark)
+  elseif mark:match("^[A-Z0-9]$") then
+    success = vim.api.nvim_del_mark(mark)
+  else
+    vim.notify("Invalid mark: " .. mark, vim.log.levels.WARN)
+    return
+  end
+
+  if success then
+    vim.notify("Deleted mark: " .. mark, vim.log.levels.INFO)
+  else
+    vim.notify("Mark not found: " .. mark, vim.log.levels.WARN)
   end
 end, { desc = "Delete Mark" })
 
