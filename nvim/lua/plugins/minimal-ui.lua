@@ -8,19 +8,31 @@ return {
     {
         "folke/snacks.nvim",
         opts = {
-            -- Disable the floating input popup to bring back the native command line
+            -- Disable the floating input popup
             input = {
                 enabled = false,
             },
+
             dashboard = {
                 enabled = true,
             },
+
             explorer = {
                 enabled = false,
                 replace_netrw = false,
             },
-            -- Include hidden and ignored files in snacks picker results
+
+            -- Snacks picker configuration
             picker = {
+                layout = {
+                    preset = "ivy",
+                    hidden = { "preview" },
+                    layout = {
+                        width = 0.75,
+                        height = 0.5,
+                        position = "bottom",
+                    },
+                },
                 sources = {
                     files = {
                         hidden = true,
@@ -29,11 +41,21 @@ return {
                 },
             },
         },
+
         keys = {
-            { "<leader>e",  false },
-            { "<leader>E",  false },
+            { "<leader>e", false },
+            { "<leader>E", false },
             { "<leader>fe", false },
             { "<leader>fE", false },
+
+            -- Emacs M-x style command launcher
+            {
+                "<leader>p",
+                function()
+                    Snacks.picker()
+                end,
+                desc = "Command Launcher",
+            },
         },
     },
 
