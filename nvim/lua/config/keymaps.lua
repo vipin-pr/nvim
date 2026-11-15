@@ -93,3 +93,93 @@ vim.keymap.set("n", "<leader>mD", function()
   vim.cmd("delmarks!")
   vim.notify("All marks deleted", vim.log.levels.INFO)
 end, { desc = "Delete All Marks" })
+
+
+-- Temporary mark with visual highlight 
+-- Alt+c: Save the current position with a red highlight.
+-- Navigate elsewhere to copy, cut, or delete text.
+-- Press Alt+c again to return to the saved position and clear the mark.
+-- Press p to paste the copied or cut text.
+local ns = vim.api.nvim_create_namespace("temporary_mark")
+
+vim.api.nvim_set_hl(0, "TemporaryMark", {
+    fg = "#ffffff",
+    bg = "#cc3333",
+    bold = true,
+})
+
+local active = false
+local mark = "Z"
+local mark_buf = nil
+local highlight_id = nil
+
+local function temporary_mark()
+    if active then
+        -- Return to the saved global mark
+        local pos = vim.fn.getpos("'" .. mark)
+
+        if pos[1] ~= 0 then
+            vim.cmd("normal! `" .. mark)
+        end
+
+        -- Remove highlight
+        if mark_buf and vim.api.nvim_buf_is_valid(mark_buf)
+            and highlight_id then
+            vim.api.nvim_buf_del_extmark(
+                mark_buf, ns, highlight_id
+            )
+        end
+
+        -- Delete temporary mark
+        vim.cmd("delmarks " .. mark)
+
+        active = false
+        mark_buf = nil
+        highlight_id = nil
+
+        vim.notify("Returned to saved position")
+        return
+    end
+
+    -- Set global mark Z
+    vim.cmd("normal! m" .. mark)
+
+    mark_buf = vim.api.nvim_get_current_buf()
+
+    -- Get cursor position
+    local pos = vim.api.nvim_win_get_cursor(0)
+    local row = pos[1] - 1
+    local col = pos[2]
+
+    local line = vim.api.nvim_buf_get_lines(
+        mark_buf, row, row + 1, false
+    )[1] or ""
+
+    -- Highlight character under cursor
+    local opts
+
+    if col < #line then
+        opts = {
+            end_row = row,
+            end_col = col + 1,
+            hl_group = "TemporaryMark",
+        }
+    else
+        opts = {
+            virt_text = { { "▏", "TemporaryMark" } },
+            virt_text_pos = "overlay",
+        }
+    end
+
+    highlight_id = vim.api.nvim_buf_set_extmark(
+        mark_buf, ns, row, col, opts
+    )
+
+    active = true
+
+    vim.notify("Temporary mark Z set")
+end
+
+vim.keymap.set("n", "<M-c>", temporary_mark, {
+    desc = "Set/return to temporary mark",
+})
