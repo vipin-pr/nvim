@@ -96,9 +96,9 @@ end, { desc = "Delete All Marks" })
 
 
 -- Temporary mark with visual highlight 
--- Alt+c: Save the current position with a red highlight.
+-- Alt+m: Save the current position with a red highlight.
 -- Navigate elsewhere to copy, cut, or delete text.
--- Press Alt+c again to return to the saved position and clear the mark.
+-- Press Alt+m again to return to the saved position and clear the mark.
 -- Press p to paste the copied or cut text.
 local ns = vim.api.nvim_create_namespace("temporary_mark")
 
@@ -180,6 +180,6 @@ local function temporary_mark()
     vim.notify("Temporary mark Z set")
 end
 
-vim.keymap.set("n", "<M-c>", temporary_mark, {
+vim.keymap.set("n", "<M-m>", temporary_mark, {
     desc = "Set/return to temporary mark",
 })
