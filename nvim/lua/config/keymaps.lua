@@ -214,3 +214,7 @@ vim.keymap.set("n", "<leader>S", function()
 
     vim.cmd("stopinsert")
 end, { desc = "Execute shell command" })
+
+vim.keymap.set("n", "<M-c>", function()
+    Snacks.picker.commands()
+end, { desc = "Commands" })
