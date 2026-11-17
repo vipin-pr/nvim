@@ -50,7 +50,7 @@ return {
 
             -- Emacs M-x style command launcher
             {
-                "<leader>p",
+                "<M-x>",
                 function()
                     Snacks.picker()
                 end,
