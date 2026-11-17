@@ -137,7 +137,7 @@ local function temporary_mark()
         mark_buf = nil
         highlight_id = nil
 
-        vim.notify("Returned to saved position")
+        vim.api.nvim_echo({ { "Returned to saved position", "None" } }, false, {})
         return
     end
 
@@ -177,9 +177,40 @@ local function temporary_mark()
 
     active = true
 
-    vim.notify("Temporary mark Z set")
+    vim.api.nvim_echo({ { "Temporary mark Z set", "None" } }, false, {})
 end
 
 vim.keymap.set("n", "<M-m>", temporary_mark, {
     desc = "Set/return to temporary mark",
 })
+
+-- Execute shell command in a terminal buffer
+vim.keymap.set("n", "<leader>S", function()
+    local command = vim.fn.input("Shell command: ")
+
+    if command == "" then
+        return
+    end
+
+    vim.cmd("botright 15new")
+
+    local buf = vim.api.nvim_get_current_buf()
+
+    vim.fn.termopen(command, {
+        on_exit = function()
+            vim.schedule(function()
+                if vim.api.nvim_buf_is_valid(buf) then
+                    vim.api.nvim_buf_set_keymap(buf, "n", "q", "<cmd>bwipeout!<CR>", {
+                        noremap = true,
+                        silent = true,
+                    })
+
+                    vim.api.nvim_set_current_buf(buf)
+                    vim.cmd("stopinsert")
+                end
+            end)
+        end,
+    })
+
+    vim.cmd("stopinsert")
+end, { desc = "Execute shell command" })
