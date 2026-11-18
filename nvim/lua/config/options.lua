@@ -45,3 +45,6 @@ vim.diagnostic.enable(false)
 
 -- Disable auto-formatting globally
 vim.g.autoformat = false
+
+-- Disable minipairs
+vim.g.minipairs_disable = true
