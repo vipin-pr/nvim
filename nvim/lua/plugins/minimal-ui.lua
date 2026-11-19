@@ -1,3 +1,4 @@
+
 return {
     -- Use Neovim's native command line instead of Noice's popup UI
     {
@@ -24,15 +25,22 @@ return {
 
             -- Snacks picker configuration
             picker = {
-                layout = {
-                    preset = "ivy",
-                    hidden = { "preview" },
-                    layout = {
-                        width = 0.75,
-                        height = 0.5,
-                        position = "bottom",
-                    },
-                },
+                layout = function(source)
+                    if source == "files" then
+                        return "ivy"
+                    end
+
+                    return {
+                        preset = "ivy",
+                        hidden = { "preview" },
+                        layout = {
+                            width = 0.75,
+                            height = 0.5,
+                            position = "bottom",
+                        },
+                    }
+                end,
+
                 sources = {
                     files = {
                         hidden = true,
@@ -50,7 +58,7 @@ return {
 
             -- Emacs M-x style command launcher
             {
-                "<M-x>",
+                "<leader>p",
                 function()
                     Snacks.picker()
                 end,
